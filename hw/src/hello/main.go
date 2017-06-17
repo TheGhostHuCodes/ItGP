@@ -2,22 +2,14 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
+func printer(message string) error {
+	defer fmt.Printf("\n")
+	_, err := fmt.Printf("%s", message)
+	return err
+}
+
 func main() {
-	n, err := fmt.Printf("Hello, World!\n")
-
-	switch {
-	case err != nil:
-		os.Exit(1)
-	case n == 0:
-		fmt.Printf("No byte output")
-	case n != 14:
-		fmt.Printf("Wrong number of characters")
-	default:
-		fmt.Printf("OK!")
-	}
-
-	fmt.Printf("\n")
+	printer("Hello, World!")
 }
