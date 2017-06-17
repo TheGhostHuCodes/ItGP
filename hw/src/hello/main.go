@@ -6,9 +6,18 @@ import (
 )
 
 func main() {
-	if num_bytes, err := fmt.Printf("Hello, World!\n"); err != nil {
+	n, err := fmt.Printf("Hello, World!\n")
+
+	switch {
+	case err != nil:
 		os.Exit(1)
-	} else {
-		fmt.Printf("Printed %d characters\n", num_bytes)
+	case n == 0:
+		fmt.Printf("No byte output")
+	case n != 14:
+		fmt.Printf("Wrong number of characters")
+	default:
+		fmt.Printf("OK!")
 	}
+
+	fmt.Printf("\n")
 }
