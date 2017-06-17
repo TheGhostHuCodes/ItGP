@@ -4,20 +4,32 @@ import (
 	"fmt"
 )
 
-func emit(c chan string) {
+func emit(c chan string, done chan bool) {
 	words := []string{"The", "quick", "brown", "fox"}
-	for _, word := range words {
-		c <- word
+	i := 0
+	for {
+		select {
+		case c <- words[i]:
+			i += 1
+			if i == len(words) {
+				i = 0
+			}
+		case <-done:
+			done <- true
+			return
+		}
 	}
-	close(c)
 }
 
 func main() {
 	wordChannel := make(chan string)
+	doneChannel := make(chan bool)
 
-	go emit(wordChannel)
-	for word := range wordChannel {
-		fmt.Printf("%s ", word)
+	go emit(wordChannel, doneChannel)
+
+	for i := 0; i < 100; i++ {
+		fmt.Printf("%s ", <-wordChannel)
 	}
-	fmt.Printf("\n")
+	doneChannel <- true
+	<-doneChannel
 }
