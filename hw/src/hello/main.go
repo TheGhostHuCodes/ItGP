@@ -4,12 +4,12 @@ import (
 	"fmt"
 )
 
-func printer(message string) error {
-	defer fmt.Printf("\n")
-	_, err := fmt.Printf("%s", message)
-	return err
+func printer(messages ...string) {
+	for _, message := range messages {
+		fmt.Printf("%s\n", message)
+	}
 }
 
 func main() {
-	printer("Hello, World!")
+	printer("Hello,", "World!")
 }
