@@ -5,16 +5,17 @@ import (
 	"os"
 )
 
+func printer(message string) error {
+	if message == "" {
+		return fmt.Errorf("Unwilling to print an empty string")
+	}
+	_, err := fmt.Printf("%s\n", message)
+	return err
+}
+
 func main() {
-	f, err := os.Open("test.txt")
-	if err != nil {
-		fmt.Printf("%s\n", err)
+	if err := printer(""); err != nil {
+		fmt.Printf("printer failed: %s\n", err)
 		os.Exit(1)
 	}
-	defer f.Close()
-
-	b := make([]byte, 100)
-	n, err := f.Read(b)
-
-	fmt.Printf("%d: %c\n", n, b)
 }
