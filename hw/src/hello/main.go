@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 func main() {
-	atoz := "the quick brown fox jumps over the lazy dog\n"
-	for i, r := range atoz {
-		fmt.Printf("%d %c\n", i, r)
+	if num_bytes, err := fmt.Printf("Hello, World!\n"); err != nil {
+		os.Exit(1)
+	} else {
+		fmt.Printf("Printed %d characters\n", num_bytes)
 	}
 }
