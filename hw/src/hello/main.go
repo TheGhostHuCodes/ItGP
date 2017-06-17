@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func emit(c chan string, done chan bool) {
+	defer close(c)
 	words := []string{"The", "quick", "brown", "fox"}
+	timer := time.NewTimer(3 * time.Second)
 	i := 0
 	for {
 		select {
@@ -17,6 +20,8 @@ func emit(c chan string, done chan bool) {
 		case <-done:
 			done <- true
 			return
+		case <-timer.C:
+			return
 		}
 	}
 }
@@ -27,9 +32,7 @@ func main() {
 
 	go emit(wordChannel, doneChannel)
 
-	for i := 0; i < 100; i++ {
-		fmt.Printf("%s ", <-wordChannel)
+	for word := range wordChannel {
+		fmt.Printf("%s ", word)
 	}
-	doneChannel <- true
-	<-doneChannel
 }
