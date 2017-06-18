@@ -2,37 +2,39 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"sync/atomic"
-	"time"
+	"io/ioutil"
+	"net/http"
 )
 
-var (
-	running int64 = 0
-)
-
-func work() {
-	atomic.AddInt64(&running, 1)
-	fmt.Printf("[%d ", running)
-	time.Sleep(time.Duration(rand.Intn(10)) * time.Second)
-	atomic.AddInt64(&running, -1)
-	fmt.Printf("]")
+type webPage struct {
+	url  string
+	body []byte
+	err  error
 }
 
-func worker(sema chan bool) {
-	<-sema
-	work()
-	sema <- true
+func (w *webPage) isOk() bool {
+	return w.err == nil
+}
+
+func (w *webPage) get() {
+	resp, err := http.Get(w.url)
+	if err != nil {
+		w.err = err
+		return
+	}
+	defer resp.Body.Close()
+	w.body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		w.err = err
+	}
 }
 
 func main() {
-	sema := make(chan bool, 10)
-
-	for i := 0; i < 1000; i++ {
-		go worker(sema)
+	w := &webPage{url: "http://www.oreilly.com/"}
+	w.get()
+	if w.isOk() {
+		fmt.Printf("URL: %s Length: %d", w.url, len(w.body))
+	} else {
+		fmt.Printf("Something went wrong: %s", w.err)
 	}
-	for i := 0; i < cap(sema); i++ {
-		sema <- true
-	}
-	time.Sleep(30 * time.Second)
 }
