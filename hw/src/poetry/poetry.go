@@ -1,7 +1,9 @@
 package poetry
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"unicode"
 )
 
@@ -11,6 +13,34 @@ type Poem []Stanza
 
 func NewPoem() Poem {
 	return Poem{}
+}
+
+func LoadPoem(name string) (Poem, error) {
+	f, err := os.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	p := Poem{}
+	var s Stanza
+
+	scan := bufio.NewScanner(f)
+	for scan.Scan() {
+		l := scan.Text()
+		if l == "" {
+			p = append(p, s)
+			s = Stanza{}
+			continue
+		}
+		s = append(s, Line(l))
+	}
+	p = append(p, s)
+
+	if scan.Err() != nil {
+		return nil, scan.Err()
+	}
+	return p, nil
 }
 
 func (p Poem) NumStanzas() int {
