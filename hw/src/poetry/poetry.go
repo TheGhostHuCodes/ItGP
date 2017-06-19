@@ -1,6 +1,7 @@
 package poetry
 
 import (
+	"fmt"
 	"unicode"
 )
 
@@ -45,6 +46,20 @@ func (p Poem) Stats() (numVowels, numConsonants, numPuncs int) {
 				}
 			}
 		}
+	}
+	return
+}
+
+func (s Stanza) String() (result string) {
+	for _, l := range s {
+		result += fmt.Sprintf("%s\n", l)
+	}
+	return
+}
+
+func (p Poem) String() (result string) {
+	for _, s := range p {
+		result += fmt.Sprintf("%s\n", s)
 	}
 	return
 }

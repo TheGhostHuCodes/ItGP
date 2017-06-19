@@ -16,4 +16,5 @@ func main() {
 	v, c, puncs := p.Stats()
 	fmt.Printf("Vowels: %d, Consonants: %d, Punctuation: %d\n", v, c, puncs)
 	fmt.Printf("Stanzas: %d, Lines: %d\n", p.NumStanzas(), p.NumLines())
+	fmt.Printf("%s", p)
 }
