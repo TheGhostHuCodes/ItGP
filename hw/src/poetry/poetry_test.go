@@ -25,6 +25,12 @@ func TestEmptyPoem(t *testing.T) {
 			t.Fatalf("Bad number of vowels,  consonants, or punctuation marks")
 		}
 	})
+
+	t.Run("NumWordsReturnsZero", func(t *testing.T) {
+		if p.NumWords() != 0 {
+			t.Fatalf("Empty poem is not empty!")
+		}
+	})
 }
 
 func TestNonEmptyPoem(t *testing.T) {
@@ -63,6 +69,15 @@ func TestStats(t *testing.T) {
 		if v != 3 || c != 7 || puncs != 2 {
 			t.Fatalf("Bad number of vowels,  consonants, or punctuation marks (%d, %d, %d)",
 				v, c, puncs)
+		}
+	})
+}
+
+func TestNumWords(t *testing.T) {
+	t.Run("WithTwoWordPoem", func(t *testing.T) {
+		p := Poem{{"Hello, World!"}}
+		if p.NumWords() != 2 {
+			t.Fatalf("Expected 2 words, got %d", p.NumWords())
 		}
 	})
 }

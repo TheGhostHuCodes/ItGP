@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"unicode"
 )
 
@@ -56,6 +57,17 @@ func (p Poem) NumLines() (count int) {
 
 func (s Stanza) NumLines() int {
 	return len(s)
+}
+
+func (p Poem) NumWords() (count int) {
+	for _, s := range p {
+		for _, l := range s {
+			sl := string(l)
+			parts := strings.Split(sl, " ")
+			count += len(parts)
+		}
+	}
+	return
 }
 
 func (p Poem) Stats() (numVowels, numConsonants, numPuncs int) {
