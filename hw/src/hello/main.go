@@ -6,6 +6,11 @@ import (
 	"poetry"
 )
 
+type poemWithTitle struct {
+	Title string
+	Body  poetry.Poem
+}
+
 func poemHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	poemName := r.Form["name"][0]
@@ -13,8 +18,9 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Poem not found", http.StatusNotFound)
 	} else {
+		pwt := poemWithTitle{poemName, p}
 		enc := json.NewEncoder(w)
-		enc.Encode(p)
+		enc.Encode(pwt)
 	}
 }
 
