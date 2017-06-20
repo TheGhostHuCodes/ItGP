@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 	"poetry"
 )
@@ -13,7 +13,8 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Poem not found", http.StatusNotFound)
 	} else {
-		fmt.Fprintf(w, "%s\n", p)
+		enc := json.NewEncoder(w)
+		enc.Encode(p)
 	}
 }
 
