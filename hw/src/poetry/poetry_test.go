@@ -42,7 +42,6 @@ func TestNonEmptyPoem(t *testing.T) {
 	})
 
 	t.Run("NumLines", func(t *testing.T) {
-
 		if p.NumLines() != 6 {
 			t.Fatalf("Unexpected line count %d", p.NumLines())
 		}
