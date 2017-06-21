@@ -70,6 +70,18 @@ func (p Poem) NumWords() (count int) {
 	return
 }
 
+func (p Poem) NumThe() (count int) {
+	for _, s := range p {
+		for _, l := range s {
+			sl := string(l)
+			if strings.Contains(sl, "The") {
+				count++
+			}
+		}
+	}
+	return
+}
+
 func (p Poem) Stats() (numVowels, numConsonants, numPuncs int) {
 	for _, s := range p {
 		for _, l := range s {

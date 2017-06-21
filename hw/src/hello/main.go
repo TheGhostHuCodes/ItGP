@@ -15,8 +15,10 @@ type config struct {
 }
 
 type poemWithTitle struct {
-	Title string
-	Body  poetry.Poem
+	Title     string
+	Body      poetry.Poem
+	WordCount int
+	TheCount  int
 }
 
 var c config
@@ -41,7 +43,7 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Poem not found", http.StatusNotFound)
 	} else {
-		pwt := poemWithTitle{poemName, p}
+		pwt := poemWithTitle{poemName, p, p.NumWords(), p.NumThe()}
 		enc := json.NewEncoder(w)
 		enc.Encode(pwt)
 	}
