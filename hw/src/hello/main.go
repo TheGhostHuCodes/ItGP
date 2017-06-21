@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"poetry"
+	"strconv"
 )
 
 type config struct {
@@ -17,7 +18,7 @@ type config struct {
 type poemWithTitle struct {
 	Title     string
 	Body      poetry.Poem
-	WordCount int
+	WordCount string
 	TheCount  int
 }
 
@@ -43,7 +44,8 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Poem not found", http.StatusNotFound)
 	} else {
-		pwt := poemWithTitle{poemName, p, p.NumWords(), p.NumThe()}
+		pwt := poemWithTitle{poemName, p,
+			strconv.FormatInt(int64(p.NumWords()), 16), p.NumThe()}
 		enc := json.NewEncoder(w)
 		enc.Encode(pwt)
 	}
