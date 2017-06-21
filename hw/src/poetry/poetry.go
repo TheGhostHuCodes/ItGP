@@ -44,6 +44,18 @@ func LoadPoem(name string) (Poem, error) {
 	return p, nil
 }
 
+func (s Stanza) Len() int {
+	return len(s)
+}
+
+func (s Stanza) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s Stanza) Less(i, j int) bool {
+	return len(s[i]) < len(s[j])
+}
+
 func (p Poem) NumStanzas() int {
 	return len(p)
 }

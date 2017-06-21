@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"poetry"
+	"sort"
 	"strconv"
 )
 
@@ -44,6 +45,7 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Poem not found", http.StatusNotFound)
 	} else {
+		sort.Sort(p[0])
 		pwt := poemWithTitle{poemName, p,
 			strconv.FormatInt(int64(p.NumWords()), 16), p.NumThe()}
 		enc := json.NewEncoder(w)
