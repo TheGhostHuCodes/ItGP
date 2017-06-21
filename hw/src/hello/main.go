@@ -8,9 +8,15 @@ import (
 	"poetry"
 	"sort"
 	"strconv"
+	"sync"
 )
 
-var cache map[string]poetry.Poem
+type protectedCache struct {
+	sync.Mutex
+	c map[string]poetry.Poem
+}
+
+var cache protectedCache
 
 type config struct {
 	Route       string
@@ -31,7 +37,7 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	poemName := r.Form["name"][0]
 
-	p, ok := cache[poemName]
+	p, ok := cache.c[poemName]
 	if !ok {
 		http.Error(w, "Poem not found (invalid)", http.StatusNotFound)
 		return
@@ -59,14 +65,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	cache = make(map[string]poetry.Poem)
+	cache.c = make(map[string]poetry.Poem)
+	var wg sync.WaitGroup
 	for _, name := range c.ValidPoems {
-		cache[name], err = poetry.LoadPoem(name + ".txt")
-		if err != nil {
-			os.Exit(1)
-		}
+		wg.Add(1)
+		go func(n string) {
+			cache.Lock()
+			cache.c[n], err = poetry.LoadPoem(n + ".txt")
+			cache.Unlock()
+			if err != nil {
+				os.Exit(1)
+			}
+			wg.Done()
+		}(name)
 	}
 
+	wg.Wait()
 	http.HandleFunc(c.Route, poemHandler)
 	http.ListenAndServe(c.BindAddress, nil)
 }
