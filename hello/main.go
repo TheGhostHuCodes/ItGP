@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"poetry"
+	"github.com/TheGhostHuCodes/ItGP/poetry"
 	"sort"
 	"strconv"
 	"sync"
