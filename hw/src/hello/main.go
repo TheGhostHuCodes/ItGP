@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -55,7 +56,10 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	log.SetFlags(log.Lmicroseconds)
 
-	f, err := os.Open("config")
+	configFilename := flag.String("conf", "config", "Name of configuration file")
+	flag.Parse()
+
+	f, err := os.Open(*configFilename)
 	if err != nil {
 		log.Fatalf("Could not open JSON config file.\nError: %s\n", err)
 	}
