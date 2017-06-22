@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"sync"
+	"time"
 )
 
 type protectedCache struct {
@@ -73,6 +74,7 @@ func main() {
 
 	cache.c = make(map[string]poetry.Poem)
 	var wg sync.WaitGroup
+	startTime := time.Now()
 	for _, name := range c.ValidPoems {
 		wg.Add(1)
 		go func(n string) {
@@ -87,6 +89,10 @@ func main() {
 	}
 
 	wg.Wait()
+	elapsed := time.Since(startTime)
+	log.Printf("Loading took %s\n", elapsed)
+	log.Printf("Started at %s\n", time.Now().Format(time.Kitchen))
+
 	http.HandleFunc(c.Route, poemHandler)
 	http.ListenAndServe(c.BindAddress, nil)
 }
