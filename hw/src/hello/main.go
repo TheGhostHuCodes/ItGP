@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"poetry"
@@ -43,6 +43,8 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Printf("User request poem %s\n", poemName)
+
 	sort.Sort(p[0])
 	pwt := poemWithTitle{poemName, p,
 		strconv.FormatInt(int64(p.NumWords()), 16), p.NumThe()}
@@ -51,18 +53,18 @@ func poemHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.SetFlags(log.Lmicroseconds)
+
 	f, err := os.Open("config")
 	if err != nil {
-		fmt.Printf("Could not open JSON file.\nError: %s\n", err)
-		os.Exit(1)
+		log.Fatalf("Could not open JSON config file.\nError: %s\n", err)
 	}
 
 	dec := json.NewDecoder(f)
 	err = dec.Decode(&c)
 	f.Close()
 	if err != nil {
-		fmt.Printf("Could not decode JSON file.\nError: %s\n", err)
-		os.Exit(1)
+		log.Fatalf("Could not decode JSON config file.\nError: %s\n", err)
 	}
 
 	cache.c = make(map[string]poetry.Poem)
@@ -74,7 +76,7 @@ func main() {
 			cache.c[n], err = poetry.LoadPoem(n + ".txt")
 			cache.Unlock()
 			if err != nil {
-				os.Exit(1)
+				log.Fatalf("Failed to load poem %s\n", n)
 			}
 			wg.Done()
 		}(name)
